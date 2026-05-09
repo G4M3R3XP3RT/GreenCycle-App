@@ -1,0 +1,85 @@
+User Story 1 : Inscription d'un Utilisateur (Citoyen et Collecteur)
+En tant qu'utilisateur soucieux de l'environnement, je souhaite m'inscrire sur GreenCycle pour commencer à recycler mes déchets et gagner des points.
+
+Tests d'Acceptation :
+1. Scénario : Inscription avec succès
+   - Étant sur la page d'inscription, je saisis un nom, prénom, email valide et un mot de passe robuste.
+   - Je choisis le rôle "USER" ou "COLLECTOR".
+   - Je valide le formulaire.
+   - Un compte est créé en base de données avec 0 points écologiques par défaut.
+   - Je reçois un message de confirmation.
+
+2. Scénario : Inscription avec email déjà utilisé
+   - Étant sur la page d'inscription, je saisis un email déjà existant dans le système.
+   - Je valide le formulaire.
+   - Une erreur "Email déjà utilisé" s'affiche et aucun doublon n'est créé.
+
+----------------
+
+User Story 2 : Signalement d'une Collecte
+En tant que citoyen, je souhaite déclarer un volume de déchets recyclables pour qu'un collecteur vienne les récupérer.
+
+Tests d'Acceptation :
+1. Scénario : Création d'une collecte valide
+   - Étant connecté en tant que "USER", je remplis le formulaire de collecte (Type : Plastique, Quantité : 5kg, Adresse : Ma maison).
+   - Je valide.
+   - Une nouvelle entrée est créée dans la table `collectes` avec le statut `EN_ATTENTE`.
+   - Le champ `citoyen_id` correspond à mon identifiant.
+
+2. Scénario : Saisie d'une quantité invalide
+   - Je saisis une quantité négative ou égale à zéro.
+   - Je valide.
+   - Une erreur de validation m'indique que la quantité doit être supérieure à 0.
+
+--------------------
+
+User Story 3 : Prise en charge par un Collecteur
+En tant que collecteur, je souhaite accepter une collecte en attente pour planifier mon passage.
+
+Tests d'Acceptation :
+1. Scénario : Acceptation d'une collecte
+   - Étant connecté en tant que "COLLECTOR", je consulte la liste des collectes `EN_ATTENTE`.
+   - Je clique sur "Prendre en charge" pour une collecte de verre de 10kg.
+   - Le statut de la collecte passe à `EN_COURS`.
+   - Mon identifiant est enregistré dans `collecteur_id`.
+
+--------------------
+
+User Story 4 : Validation d'une Collecte et Récompense
+En tant que collecteur, je veux marquer une collecte comme terminée une fois le ramassage effectué pour que le citoyen reçoive ses points.
+
+Tests d'Acceptation :
+1. Scénario : Finalisation avec succès
+   - La collecte est actuellement `EN_COURS`.
+   - Je clique sur "Valider le ramassage".
+   - Le statut passe à `TERMINE`.
+   - Les points écologiques du citoyen associé sont incrémentés (ex: +10 points par kg).
+   - Vérifier que `utilisateurs.points_ecologiques` a bien augmenté en base.
+
+--------------------
+
+User Story 5 : Consultation du Leaderboard
+En tant qu'utilisateur, je souhaite voir le classement des citoyens pour me motiver à recycler davantage.
+
+Tests d'Acceptation :
+1. Scénario : Affichage du top 10
+   - J'accède à la section "Leaderboard".
+   - La liste affiche les utilisateurs triés par `points_ecologiques` décroissants.
+   - Mon propre profil est mis en évidence dans la liste si je ne suis pas dans le top 10.
+
+--------------------
+
+User Story 6 : Chatbot d'Assistance Ecologique
+En tant qu'utilisateur, je souhaite poser des questions textuelles à un assistant intelligent pour savoir comment trier certains objets complexes et comprendre mon impact écologique.
+
+Tests d'Acceptation :
+1. Scénario : Question sur le tri
+   - J'ouvre l'interface de chat.
+   - Je tape : "Où dois-je jeter mes piles usagées ?".
+   - Le chatbot me répond avec des conseils précis (ex: "Les piles ne vont pas à la poubelle classique, apportez-les dans un point de collecte spécifique ou en magasin").
+   - La réponse est rapide et formulée de manière naturelle.
+
+2. Scénario : Question sur les points (GreenPoints)
+   - Je tape : "Comment gagner plus de points ?".
+   - Le chatbot m'explique les barèmes (ex: "Chaque kg de plastique rapporte 10 points, le métal 15 points").
+   - Il me suggère de planifier une nouvelle collecte.
