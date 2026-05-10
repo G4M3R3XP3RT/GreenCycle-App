@@ -50,3 +50,49 @@ La base de données contient déjà des utilisateurs pour faciliter vos tests :
 
 - **Administrateur (Rôle: ADMIN)**
   - Email : `admin@greencycle.org` | Mot de passe : `rootAdmin`
+
+## 6. Exemples de Requêtes (Postman)
+
+### A. Se connecter (Obtenir le Token JWT)
+**Requête :** `POST http://localhost:8080/api/auth/login`  
+**Headers :** `Content-Type: application/json`  
+**Body (JSON) :**
+```json
+{
+  "email": "jean.martin@example.com",
+  "password": "securePass123"
+}
+```
+*Copiez le champ `token` reçu dans la réponse pour les appels suivants.*
+
+### B. Signaler une collecte (Rôle: USER)
+**Requête :** `POST http://localhost:8080/api/collectes`  
+**Headers :** 
+- `Content-Type: application/json`
+- `Authorization: Bearer <VOTRE_TOKEN>`  
+**Body (JSON) :**
+```json
+{
+  "typeDechet": "Vieux câbles et ordinateurs",
+  "quantite": 5.5,
+  "localisation": "123 Rue de la Nature, Montréal"
+}
+```
+
+### C. Poser une question au Chatbot IA
+**Requête :** `POST http://localhost:8080/api/chat`  
+**Headers :** 
+- `Content-Type: application/json`
+- `Authorization: Bearer <VOTRE_TOKEN>`  
+**Body (JSON) :**
+```json
+{
+  "message": "Où dois-je jeter mes piles usagées ?"
+}
+```
+
+### D. Voir le Leaderboard
+**Requête :** `GET http://localhost:8080/api/leaderboard`  
+**Headers :** 
+- `Authorization: Bearer <VOTRE_TOKEN>`  
+*(Aucun Body requis)*
