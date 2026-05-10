@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,42 @@ public class CollecteService {
 
         collecte = collecteRepository.save(collecte);
 
+        return mapToResponse(collecte);
+    }
+
+    public List<CollecteResponse> getCollectesEnAttente() {
+        return collecteRepository.findByStatut(StatutCollecte.EN_ATTENTE).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public CollecteResponse accepterCollecte(Long id) {
+        Collecte collecte = collecteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Collecte non trouvée"));
+
+        if (collecte.getStatut() != StatutCollecte.EN_ATTENTE) {
+            throw new IllegalArgumentException("La collecte n'est pas en attente");
+        }
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        Utilisateur collecteur = utilisateurRepository.findByEmail(username)
+                .orElseThrow(() -> new IllegalArgumentException("Collecteur non trouvé"));
+
+        collecte.setStatut(StatutCollecte.EN_COURS);
+        collecte.setCollecteur(collecteur);
+
+        collecte = collecteRepository.save(collecte);
+        return mapToResponse(collecte);
+    }
+
+    private CollecteResponse mapToResponse(Collecte collecte) {
         return CollecteResponse.builder()
                 .id(collecte.getId())
                 .typeDechet(collecte.getTypeDechet())
@@ -52,7 +90,7 @@ public class CollecteService {
                 .localisation(collecte.getLocalisation())
                 .dateSignalement(collecte.getDateSignalement())
                 .statut(collecte.getStatut())
-                .citoyenId(citoyen.getId())
+                .citoyenId(collecte.getCitoyen() != null ? collecte.getCitoyen().getId() : null)
                 .build();
     }
 }
