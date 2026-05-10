@@ -12,10 +12,10 @@ Bienvenue sur le dépôt du Backend de **GreenCycle**, l'application qui gamifie
 1. Cloner le dépôt Git : `git clone <url-du-dépôt>`
 2. Ouvrir le projet dans l'IDE.
 3. Lancer la commande `mvn clean install` pour installer les dépendances.
-4. Lancer l'application via votre IDE ou avec la commande (Windows) : `.\mvnw.cmd spring-boot:run` ou (Mac/Linux) : `./mvnw spring-boot:run`
+4. Lancer l'application via votre IDE ou avec la commande (Windows) : `.\mvnw.cmd spring-boot:run` ou (Mac/Linux) : `mvn spring-boot:run`
 
 ## 3. Configuration
-- **Base de données** : Le projet utilise désormais **MariaDB / MySQL** en production (hébergé sur Alwaysdata). La configuration JDBC est gérée dans le fichier `application.properties`. La persistance des données est maintenant assurée entre les redémarrages.
+- **Base de données** : Le projet utilise **MariaDB / MySQL** en production (hébergé sur Alwaysdata). La configuration JDBC est gérée dans le fichier `application.properties`. La persistance des données est maintenant assurée entre les redémarrages.
 - **Ollama** : L'URL par défaut est `http://localhost:11434`.
 
 ## 4. Endpoints de l'API Principale
