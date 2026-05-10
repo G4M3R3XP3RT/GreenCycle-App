@@ -42,4 +42,10 @@ public class CollecteController {
     public ResponseEntity<CollecteResponse> accepterCollecte(@PathVariable Long id) {
         return ResponseEntity.ok(collecteService.accepterCollecte(id));
     }
+
+    @PutMapping("/{id}/valider")
+    @PreAuthorize("hasRole('COLLECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<CollecteResponse> validerCollecte(@PathVariable Long id) {
+        return ResponseEntity.ok(collecteService.validerCollecte(id));
+    }
 }

@@ -82,6 +82,46 @@ public class CollecteService {
         return mapToResponse(collecte);
     }
 
+    public CollecteResponse validerCollecte(Long id) {
+        Collecte collecte = collecteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Collecte non trouvée"));
+
+        if (collecte.getStatut() != StatutCollecte.EN_COURS) {
+            throw new IllegalArgumentException("La collecte n'est pas en cours de traitement");
+        }
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        if (collecte.getCollecteur() == null || !collecte.getCollecteur().getEmail().equals(username)) {
+            throw new IllegalArgumentException("Vous n'êtes pas le collecteur assigné à cette collecte");
+        }
+
+        collecte.setStatut(StatutCollecte.TERMINE);
+
+        // Attribution des points (10 points par kg)
+        if (collecte.getCitoyen() != null) {
+            Utilisateur citoyen = collecte.getCitoyen();
+            int pointsGagnes = (int) Math.round(collecte.getQuantite() * 10);
+            
+            // Handle null initial points just in case
+            if (citoyen.getPointsEcologiques() == null) {
+                citoyen.setPointsEcologiques(0);
+            }
+            
+            citoyen.setPointsEcologiques(citoyen.getPointsEcologiques() + pointsGagnes);
+            utilisateurRepository.save(citoyen);
+        }
+
+        collecte = collecteRepository.save(collecte);
+        return mapToResponse(collecte);
+    }
+
     private CollecteResponse mapToResponse(Collecte collecte) {
         return CollecteResponse.builder()
                 .id(collecte.getId())
