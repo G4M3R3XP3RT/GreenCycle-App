@@ -37,6 +37,18 @@ public class CollecteController {
         return ResponseEntity.ok(collecteService.getCollectesEnAttente());
     }
 
+    @GetMapping("/mes-collectes")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<CollecteResponse>> getMesCollectes() {
+        return ResponseEntity.ok(collecteService.getMesCollectes());
+    }
+
+    @GetMapping("/mes-tournees")
+    @PreAuthorize("hasRole('COLLECTOR') or hasRole('ADMIN')")
+    public ResponseEntity<List<CollecteResponse>> getMesTournees() {
+        return ResponseEntity.ok(collecteService.getMesTournees());
+    }
+
     @PutMapping("/{id}/accepter")
     @PreAuthorize("hasRole('COLLECTOR') or hasRole('ADMIN')")
     public ResponseEntity<CollecteResponse> accepterCollecte(@PathVariable Long id) {

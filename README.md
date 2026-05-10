@@ -12,10 +12,10 @@ Bienvenue sur le dépôt du Backend de **GreenCycle**, l'application qui gamifie
 1. Cloner le dépôt Git : `git clone <url-du-dépôt>`
 2. Ouvrir le projet dans l'IDE.
 3. Lancer la commande `mvn clean install` pour installer les dépendances.
-4. Lancer l'application via votre IDE ou avec la commande : `.\mvnw.cmd spring-boot:run`
+4. Lancer l'application via votre IDE ou avec la commande (Windows) : `.\mvnw.cmd spring-boot:run` ou (Mac/Linux) : `./mvnw spring-boot:run`
 
 ## 3. Configuration
-- **Base de données** : Le projet utilise **H2** en mémoire. Vous pouvez voir la base de données via `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:greencycle_db`, User: `sa`, Password: `password`).
+- **Base de données** : Le projet utilise désormais **MariaDB / MySQL** en production (hébergé sur Alwaysdata). La configuration JDBC est gérée dans le fichier `application.properties`. La persistance des données est maintenant assurée entre les redémarrages.
 - **Ollama** : L'URL par défaut est `http://localhost:11434`.
 
 ## 4. Endpoints de l'API Principale
@@ -30,7 +30,7 @@ Bienvenue sur le dépôt du Backend de **GreenCycle**, l'application qui gamifie
 - `GET /api/leaderboard` : Consulter le classement des meilleurs recycleurs
 
 **Collecteurs (Rôle : COLLECTOR) :**
-- `GET /api/collectes/en-attente` : Lister les collectes disponibles
+- `GET /api/collectes/mes-tournees` : Obtenir toutes les collectes pertinentes (en attente + celles assignées au collecteur)
 - `PUT /api/collectes/{id}/accepter` : Prendre en charge une collecte
 - `PUT /api/collectes/{id}/valider` : Confirmer le ramassage et attribuer les GreenPoints au citoyen
 

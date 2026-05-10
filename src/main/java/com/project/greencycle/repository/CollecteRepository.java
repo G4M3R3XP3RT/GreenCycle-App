@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface CollecteRepository extends JpaRepository<Collecte, Long> {
     List<Collecte> findByStatut(StatutCollecte statut);
+    List<Collecte> findByCitoyenEmail(String email);
+    List<Collecte> findByCollecteurEmail(String email);
 }

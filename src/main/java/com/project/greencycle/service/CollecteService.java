@@ -56,6 +56,40 @@ public class CollecteService {
                 .collect(Collectors.toList());
     }
 
+    public List<CollecteResponse> getMesTournees() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        List<Collecte> enAttente = collecteRepository.findByStatut(StatutCollecte.EN_ATTENTE);
+        List<Collecte> mesCollectes = collecteRepository.findByCollecteurEmail(username);
+
+        // Combine both lists
+        enAttente.addAll(mesCollectes);
+
+        return enAttente.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<CollecteResponse> getMesCollectes() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        return collecteRepository.findByCitoyenEmail(username).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     public CollecteResponse accepterCollecte(Long id) {
         Collecte collecte = collecteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Collecte non trouvée"));
@@ -105,15 +139,13 @@ public class CollecteService {
         collecte.setStatut(StatutCollecte.TERMINE);
 
         // Attribution des points (10 points par kg)
+        int pointsGagnes = (int) Math.round(collecte.getQuantite() * 10);
+
         if (collecte.getCitoyen() != null) {
             Utilisateur citoyen = collecte.getCitoyen();
-            int pointsGagnes = (int) Math.round(collecte.getQuantite() * 10);
-            
-            // Handle null initial points just in case
             if (citoyen.getPointsEcologiques() == null) {
                 citoyen.setPointsEcologiques(0);
             }
-            
             citoyen.setPointsEcologiques(citoyen.getPointsEcologiques() + pointsGagnes);
             utilisateurRepository.save(citoyen);
         }
