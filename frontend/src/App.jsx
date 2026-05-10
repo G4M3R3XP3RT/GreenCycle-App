@@ -25,7 +25,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   }
   
   if (allowedRoles && !allowedRoles.includes(userRole)) {
-    if (userRole === 'COLLECTOR') return <Navigate to="/collector" replace />;
+    if (userRole === 'COLLECTOR' || userRole === 'ADMIN') return <Navigate to="/collector" replace />;
     return <Navigate to="/dashboard" replace />;
   }
 
@@ -57,7 +57,7 @@ function App() {
             <Route 
               path="/collector" 
               element={
-                <ProtectedRoute allowedRoles={['COLLECTOR']}>
+                <ProtectedRoute allowedRoles={['COLLECTOR', 'ADMIN']}>
                   <CollectorDashboard />
                 </ProtectedRoute>
               } 

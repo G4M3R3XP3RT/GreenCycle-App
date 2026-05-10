@@ -11,7 +11,9 @@ const Navbar = () => {
     navigate('/login');
   };
 
-  const isCollector = user?.role === 'COLLECTOR' || (user?.roles && user.roles.includes('COLLECTOR'));
+  const isCollector = 
+    ['COLLECTOR', 'ROLE_COLLECTOR', 'ADMIN', 'ROLE_ADMIN'].includes(user?.role) || 
+    (user?.roles && (user.roles.includes('COLLECTOR') || user.roles.includes('ROLE_COLLECTOR') || user.roles.includes('ADMIN') || user.roles.includes('ROLE_ADMIN')));
 
   return (
     <nav style={{ padding: '1rem 0', marginBottom: '2rem' }}>

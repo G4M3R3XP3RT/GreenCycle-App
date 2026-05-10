@@ -37,16 +37,22 @@ public class LeaderboardService {
                 })
                 .collect(Collectors.toList());
 
-        // Get current user
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
+        // Get current user (if authenticated)
+        Object principal = SecurityContextHolder.getContext().getAuthentication() != null
+                ? SecurityContextHolder.getContext().getAuthentication().getPrincipal()
+                : null;
+        String username = null;
+
         if (principal instanceof UserDetails) {
             username = ((UserDetails) principal).getUsername();
-        } else {
+        } else if (principal != null && !principal.toString().equals("anonymousUser")) {
             username = principal.toString();
         }
 
-        Utilisateur currentUser = utilisateurRepository.findByEmail(username).orElse(null);
+        Utilisateur currentUser = null;
+        if (username != null) {
+            currentUser = utilisateurRepository.findByEmail(username).orElse(null);
+        }
         UserScoreDTO currentUserScore = null;
 
         if (currentUser != null && currentUser.getRole() == Role.USER) {
