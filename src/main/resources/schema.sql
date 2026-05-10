@@ -17,7 +17,7 @@ CREATE TABLE utilisateurs (
 -- Table des Collectes
 CREATE TABLE collectes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    type_dechet VARCHAR(50) NOT NULL, -- PLASTIQUE, VERRE, PAPIER, METAL
+    type_dechet VARCHAR(255) NOT NULL, -- Texte libre
     quantite DOUBLE NOT NULL, -- en kg
     localisation VARCHAR(255) NOT NULL,
     date_signalement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
