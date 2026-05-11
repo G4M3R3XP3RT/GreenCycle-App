@@ -15,7 +15,13 @@ Bienvenue sur le dépôt du Backend de **GreenCycle**, l'application qui gamifie
 4. Lancer l'application via votre IDE ou avec la commande (Windows) : `.\mvnw.cmd spring-boot:run` ou (Mac/Linux) : `mvn spring-boot:run`
 
 ## 3. Configuration
-- **Base de données** : Le projet utilise **MariaDB / MySQL** en production (hébergé sur Alwaysdata). La configuration JDBC est gérée dans le fichier `application.properties`. La persistance des données est maintenant assurée entre les redémarrages.
+- **Base de données** : Le projet est configuré pour utiliser **MySQL / MariaDB**. Vous devez utiliser votre propre base de données. Pour cela, exportez simplement vos identifiants dans votre terminal avant de lancer le projet :
+  ```bash
+  export DB_URL="jdbc:mariadb://votre_serveur/votre_base"
+  export DB_USERNAME="votre_utilisateur"
+  export DB_PASSWORD="votre_mot_de_passe"
+  ```
+  *Note : Des fichiers de base (`schema.sql` et/ou `data.sql`) sont disponibles dans le dossier `src/main/resources/`. Vous êtes libre de les utiliser pour initialiser facilement votre base de données locale ou distante !*
 - **Ollama** : L'URL par défaut est `http://localhost:11434`.
 
 ## 4. Endpoints de l'API Principale
