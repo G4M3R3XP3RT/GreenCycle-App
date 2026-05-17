@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { userService } from '../services/api';
 
+//Pts Leaderboard page
 const Leaderboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -9,6 +10,7 @@ const Leaderboard = () => {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
+        //backend already handles tri and displaying user connected if role = USER / citoyen
         const response = await userService.getLeaderboard();
         let leaderboardData = [];
         if (response.data.top10) {
@@ -44,12 +46,12 @@ const Leaderboard = () => {
         <div className="glass-panel" style={{ padding: '2rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {users.map((user, index) => (
-              <div 
-                key={user.id || index} 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  padding: '1rem', 
+              <div
+                key={user.id || index}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '1rem',
                   background: index === 0 ? 'rgba(251, 191, 36, 0.1)' : 'rgba(0,0,0,0.2)',
                   border: index === 0 ? '1px solid rgba(251, 191, 36, 0.3)' : '1px solid var(--card-border)',
                   borderRadius: '12px',
@@ -57,12 +59,12 @@ const Leaderboard = () => {
                 }}
                 className="leaderboard-item"
               >
-                <div style={{ 
-                  width: '40px', 
-                  height: '40px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                   background: index === 0 ? 'var(--accent-color)' : index === 1 ? '#9CA3AF' : index === 2 ? '#B45309' : 'var(--glass-bg)',
                   color: index < 3 ? '#000' : 'var(--text-secondary)',
                   borderRadius: '50%',
@@ -72,11 +74,11 @@ const Leaderboard = () => {
                 }}>
                   {index + 1}
                 </div>
-                
+
                 <div style={{ flex: 1 }}>
                   <h4 style={{ margin: 0, fontSize: '1.1rem' }}>{user.prenom} {user.nom}</h4>
                 </div>
-                
+
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--primary-color)' }}>
                     {user.points}
@@ -85,7 +87,7 @@ const Leaderboard = () => {
                 </div>
               </div>
             ))}
-            
+
             {users.length === 0 && (
               <p style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '2rem 0' }}>Aucun utilisateur dans le classement pour le moment.</p>
             )}

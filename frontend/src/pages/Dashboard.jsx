@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collectionService, userService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
+//Citoyen dashboard page
 const Dashboard = () => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [greenPoints, setGreenPoints] = useState(0);
 
+  //fetch collectes in db and update local leaderboard data/state
   const fetchCollections = async () => {
     try {
       const [colRes, leadRes] = await Promise.all([
@@ -22,13 +24,13 @@ const Dashboard = () => {
         userService.getLeaderboard()
       ]);
       setMyCollections(Array.isArray(colRes.data) ? colRes.data : colRes.data.content || []);
-      
+
       let leadData = [];
       if (leadRes.data.top10) leadData = leadRes.data.top10;
       else if (Array.isArray(leadRes.data)) leadData = leadRes.data;
       else if (leadRes.data.content) leadData = leadRes.data.content;
-      
-      // Try to find the user in the top 10, or use currentUser if the backend returns it
+
+      // set greenpoints locally from user connected for display, or call db
       if (leadRes.data.currentUser) {
         setGreenPoints(leadRes.data.currentUser.points);
       } else {
@@ -54,7 +56,7 @@ const Dashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Convert quantite to a number
+      // turn quantite from string to number
       const payload = {
         ...formData,
         quantite: parseFloat(formData.quantite)
@@ -63,7 +65,7 @@ const Dashboard = () => {
       setMessage('Collecte signalée avec succès ! En attente d\'un collecteur.');
       setError('');
       setFormData({ typeDechet: 'Plastique', quantite: '', localisation: '' });
-      fetchCollections(); // Refresh list after successful submission
+      fetchCollections(); // refresh list after submission
     } catch (err) {
       console.error(err);
       let errorMessage = "Erreur lors du signalement de la collecte.";

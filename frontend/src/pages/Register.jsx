@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
-//Register
+//Register page
 const Register = () => {
   const [formData, setFormData] = useState({
     email: '',

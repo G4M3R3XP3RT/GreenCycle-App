@@ -2,17 +2,21 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+//top navbar with navs to all pages
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    navigate('/'); // auto go to landing page first
+    setTimeout(() => {
+      logout(); // clear state after navigation
+    }, 0);
   };
 
-  const isCollector = 
-    ['COLLECTOR', 'ROLE_COLLECTOR', 'ADMIN', 'ROLE_ADMIN'].includes(user?.role) || 
+  //const to update navbar if user is collector (Espace Collecteur)
+  const isCollector =
+    ['COLLECTOR', 'ROLE_COLLECTOR', 'ADMIN', 'ROLE_ADMIN'].includes(user?.role) ||
     (user?.roles && (user.roles.includes('COLLECTOR') || user.roles.includes('ROLE_COLLECTOR') || user.roles.includes('ADMIN') || user.roles.includes('ROLE_ADMIN')));
 
   return (
@@ -24,7 +28,7 @@ const Navbar = () => {
 
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <Link to="/leaderboard">Classement</Link>
-          
+
           {user ? (
             <>
               {isCollector ? (

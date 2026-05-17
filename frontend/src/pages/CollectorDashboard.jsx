@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collectionService } from '../services/api';
 
+//Collector dashboard page
 const CollectorDashboard = () => {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -8,7 +9,7 @@ const CollectorDashboard = () => {
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   const [optimizing, setOptimizing] = useState(false);
-  const [startLocation, setStartLocation] = useState('Salaberry-de-Valleyfield, QC');
+  const [startLocation, setStartLocation] = useState('Salaberry-de-Valleyfield, QC'); //default start location for algorithme de trajet
 
   const fetchCollections = async () => {
     try {
@@ -37,7 +38,7 @@ const CollectorDashboard = () => {
     setActionLoadingId(id);
     try {
       await collectionService.acceptCollection(id);
-      fetchCollections(); // Refresh list
+      fetchCollections(); // refresh list for ui
     } catch (err) {
       alert("Erreur lors de l'acceptation de la collecte. Il se peut qu'elle soit déjà prise en charge.");
     } finally {
@@ -48,13 +49,15 @@ const CollectorDashboard = () => {
   const handleValidate = async (id) => {
     try {
       await collectionService.validateCollection(id);
-      fetchCollections(); // Refresh list
+      fetchCollections(); // refresh list for ui
     } catch (err) {
       alert("Erreur lors de la validation de la collecte.");
     }
   };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    //calculate distance between two points to determine shortest path for collection tours
+    //we use openstreetmap api to get lat et lon for address of collecte
     const R = 6371; // Radius of the earth in km
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -68,6 +71,7 @@ const CollectorDashboard = () => {
 
   const geocode = async (address) => {
     try {
+      //get lat and lon for address of collecte
       const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
       const data = await res.json();
       if (data && data.length > 0) {
@@ -80,7 +84,9 @@ const CollectorDashboard = () => {
   };
 
   const optimizeTour = async () => {
+    //optimization of path for collection tours, updates ui to show 1,2,3 from start location
     setOptimizing(true);
+    //triggered by button, bool to stop when stop
 
     const startCoords = await geocode(startLocation);
     if (!startCoords) {
@@ -101,7 +107,7 @@ const CollectorDashboard = () => {
     const geocodedCollectes = [];
     for (const c of activeCollectes) {
       const coords = await geocode(c.localisation);
-      await new Promise(r => setTimeout(r, 1000)); // Respect Nominatim policy
+      await new Promise(r => setTimeout(r, 1000)); // nominatim policy to not spam requests
       geocodedCollectes.push({ ...c, coords: coords || startCoords });
     }
 
@@ -126,10 +132,10 @@ const CollectorDashboard = () => {
       unvisited.splice(nearestIdx, 1);
     }
 
-    // Strip out coords and merge back
+    //clean the sorted list of coords and merge back to ui. ex: 2,3,1 return in order 1,2,3 to ui
     const cleanSorted = sorted.map(({ coords, ...rest }) => ({ ...rest, optimized: true }));
     setCollections([...cleanSorted, ...otherCollectes]);
-    setOptimizing(false);
+    setOptimizing(false); //stop calling this function
   };
 
   const activeTours = collections.filter(c => c.statut === 'EN_COURS');

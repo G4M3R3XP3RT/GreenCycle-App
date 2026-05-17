@@ -2,15 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { aiService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
+//Ai chatbot widget overlay
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     { sender: 'ai', text: "Bonjour ! Je suis l'assistant GreenCycle. Comment puis-je vous aider ?" }
-  ]);
+  ]); //simulate ai bot first message
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const { user } = useAuth(); // Optional: could hide chat if not logged in
+  const { user } = useAuth();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -18,7 +19,7 @@ const ChatWidget = () => {
 
   useEffect(() => {
     if (isOpen) {
-      scrollToBottom();
+      scrollToBottom(); //always spam scroll to bottom when new msg to be fluid
     }
   }, [messages, isOpen]);
 
@@ -32,14 +33,16 @@ const ChatWidget = () => {
     setLoading(true);
 
     try {
+      //call to local ai on p 11434
       const response = await aiService.chat(userMessage);
       const aiResponse = typeof response.data === 'string' ? response.data : response.data.reponse || response.data.response || response.data.message || "Je n'ai pas pu générer de réponse.";
       setMessages(prev => [...prev, { sender: 'ai', text: aiResponse }]);
+      //set messages by ai or user to display left or right in chatbox
     } catch (err) {
       console.error(err);
       let errorMsg = "Désolé, une erreur s'est produite lors de la communication avec l'assistant.";
       if (err.response && err.response.status === 500) {
-         errorMsg = "Erreur serveur (500). L'IA n'est peut-être pas démarrée en arrière-plan.";
+        errorMsg = "Erreur serveur (500). L'IA n'est peut-être pas démarrée en arrière-plan.";
       }
       setMessages(prev => [...prev, { sender: 'ai', text: errorMsg }]);
     } finally {
@@ -47,13 +50,12 @@ const ChatWidget = () => {
     }
   };
 
-  // Only show if user is logged in, or remove this check if public chat is allowed
+  //only display chatbot if user is connected, otherwise no chatbot
   if (!user) return null;
 
   return (
     <>
-      {/* Floating Button */}
-      <button 
+      <button
         onClick={() => setIsOpen(!isOpen)}
         className="btn btn-primary"
         style={{
@@ -76,7 +78,7 @@ const ChatWidget = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div 
+        <div
           className="glass-panel animate-fade-in"
           style={{
             position: 'fixed',
@@ -98,8 +100,8 @@ const ChatWidget = () => {
 
           <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '1rem', background: 'var(--bg-color)' }}>
             {messages.map((msg, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 style={{
                   alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start',
                   maxWidth: '85%',
@@ -123,17 +125,17 @@ const ChatWidget = () => {
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', padding: '0.75rem', background: 'var(--card-bg)', borderTop: '1px solid var(--card-border)' }}>
-            <input 
-              type="text" 
-              value={input} 
-              onChange={(e) => setInput(e.target.value)} 
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
               placeholder="Posez votre question..."
               style={{ flex: 1, borderRadius: '20px', padding: '0.75rem 1rem', border: '1px solid var(--card-border)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none' }}
               disabled={loading}
             />
-            <button 
-              type="submit" 
-              className="btn btn-primary" 
+            <button
+              type="submit"
+              className="btn btn-primary"
               style={{ borderRadius: '50%', width: '45px', height: '45px', padding: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '0.5rem' }}
               disabled={loading || !input.trim()}
             >

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
+//Global auth context + user state to manage jwt-token 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {

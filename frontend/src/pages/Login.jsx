@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
+//Login page
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +16,7 @@ const Login = () => {
     try {
       const response = await authService.login(email, password);
       login(response.data.token);
-      navigate('/dashboard'); // We can redirect based on role in App.jsx or Navbar.jsx
+      navigate('/dashboard'); // redirect to dashboard after success login
     } catch (err) {
       console.error(err);
       let errorMessage = "Identifiants invalides ou erreur serveur.";
@@ -36,37 +37,37 @@ const Login = () => {
     <div className="container animate-fade-in" style={{ maxWidth: '500px', paddingTop: '4rem' }}>
       <div className="glass-panel" style={{ padding: '2.5rem' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Bon retour parmi nous</h2>
-        
+
         {error && <div style={{ background: 'var(--danger-color)', color: 'white', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem' }}>{error}</div>}
-        
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label">Email</label>
-            <input 
-              type="email" 
-              className="form-control" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
+            <input
+              type="email"
+              className="form-control"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
-          
+
           <div className="form-group">
             <label className="form-label">Mot de passe</label>
-            <input 
-              type="password" 
-              className="form-control" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
-          
+
           <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
             Se connecter
           </button>
         </form>
-        
+
         <div style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-secondary)' }}>
           Pas encore de compte ? <Link to="/register">S'inscrire</Link>
         </div>

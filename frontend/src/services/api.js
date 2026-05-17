@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_URL = '/api';
 
+//API client
 const api = axios.create({
   baseURL: API_URL,
 });
@@ -14,6 +15,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+//all api calls split in sections cuz pretty :)
 export const authService = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   register: (userData) => api.post('/auth/register', userData),

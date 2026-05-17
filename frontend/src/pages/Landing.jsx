@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-//MAIN LANDING PAGE
+//Main landing page
 const Landing = () => {
   const { user } = useAuth();
   //always call useAuth to check if user logged in / stored jwt token

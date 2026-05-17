@@ -13,6 +13,7 @@ import './index.css';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
+  //always call useAuth to check if user logged in / stored jwt token
 
   if (loading) return <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement...</div>;
   if (!user) return <Navigate to="/login" replace />;
@@ -34,11 +35,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
+//put navbar over all routes so that navbar component stays fixed on top of app/every pages
 function App() {
   return (
     <AuthProvider>
       <Router>
         <div className="app-container">
+
           <Navbar />
           <Routes>
             <Route path="/" element={<Landing />} />
