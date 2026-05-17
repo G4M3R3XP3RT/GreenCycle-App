@@ -1,5 +1,7 @@
 package com.project.greencycle.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.project.greencycle.dto.ChatRequest;
 import com.project.greencycle.dto.ChatResponse;
 import com.project.greencycle.service.ChatbotService;
@@ -16,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ChatbotController {
 
-    private final ChatbotService chatbotService;
+    @Autowired
+    private ChatbotService chatbotService;
 
     @PostMapping
     public ResponseEntity<ChatResponse> askQuestion(@Valid @RequestBody ChatRequest request) {

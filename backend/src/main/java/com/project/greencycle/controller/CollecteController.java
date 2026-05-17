@@ -1,5 +1,8 @@
 package com.project.greencycle.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import com.project.greencycle.dto.CollectorDashboardResponse;
+
 import com.project.greencycle.dto.CollecteRequest;
 import com.project.greencycle.dto.CollecteResponse;
 import com.project.greencycle.service.CollecteService;
@@ -23,7 +26,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CollecteController {
 
-    private final CollecteService collecteService;
+    @Autowired
+    private CollecteService collecteService;
 
     @PostMapping
     @PreAuthorize("hasRole('USER')")
@@ -45,7 +49,7 @@ public class CollecteController {
 
     @GetMapping("/mes-tournees")
     @PreAuthorize("hasRole('COLLECTOR') or hasRole('ADMIN')")
-    public ResponseEntity<List<CollecteResponse>> getMesTournees() {
+    public ResponseEntity<CollectorDashboardResponse> getMesTournees() {
         return ResponseEntity.ok(collecteService.getMesTournees());
     }
 

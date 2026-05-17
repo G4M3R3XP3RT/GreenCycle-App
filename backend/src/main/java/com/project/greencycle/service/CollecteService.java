@@ -1,7 +1,10 @@
 package com.project.greencycle.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.project.greencycle.dto.CollecteRequest;
 import com.project.greencycle.dto.CollecteResponse;
+import com.project.greencycle.dto.CollectorDashboardResponse;
 import com.project.greencycle.entity.Collecte;
 import com.project.greencycle.entity.StatutCollecte;
 import com.project.greencycle.entity.Utilisateur;
@@ -20,11 +23,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CollecteService {
 
-    private final CollecteRepository collecteRepository;
-    private final UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private CollecteRepository collecteRepository;
+
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
 
     public CollecteResponse creerCollecte(CollecteRequest request) {
-        // Get currently authenticated user
+        // get current authenticated user
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
@@ -56,7 +62,7 @@ public class CollecteService {
                 .collect(Collectors.toList());
     }
 
-    public List<CollecteResponse> getMesTournees() {
+    public CollectorDashboardResponse getMesTournees() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {
@@ -68,12 +74,25 @@ public class CollecteService {
         List<Collecte> enAttente = collecteRepository.findByStatut(StatutCollecte.EN_ATTENTE);
         List<Collecte> mesCollectes = collecteRepository.findByCollecteurEmail(username);
 
-        // Combine both lists
-        enAttente.addAll(mesCollectes);
-
-        return enAttente.stream()
+        List<CollecteResponse> disponibles = enAttente.stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
+
+        List<CollecteResponse> actives = mesCollectes.stream()
+                .filter(c -> c.getStatut() == StatutCollecte.EN_COURS)
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+
+        List<CollecteResponse> historique = mesCollectes.stream()
+                .filter(c -> c.getStatut() == StatutCollecte.TERMINE)
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+
+        return CollectorDashboardResponse.builder()
+                .disponibles(disponibles)
+                .actives(actives)
+                .historique(historique)
+                .build();
     }
 
     public List<CollecteResponse> getMesCollectes() {

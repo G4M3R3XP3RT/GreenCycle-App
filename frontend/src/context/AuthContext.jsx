@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        // Assuming the JWT contains 'sub' for email and potentially roles or ID
         setUser({ email: decoded.sub, ...decoded });
       } catch (err) {
         console.error('Invalid token', err);

@@ -1,5 +1,7 @@
 package com.project.greencycle.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.project.greencycle.dto.LeaderboardResponse;
 import com.project.greencycle.dto.UserScoreDTO;
 import com.project.greencycle.entity.Role;
@@ -18,10 +20,11 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class LeaderboardService {
 
-    private final UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
 
     public LeaderboardResponse getLeaderboard() {
-        // Fetch top 10 citizens
+        // fetch top 10 citoyens
         List<Utilisateur> top10Users = utilisateurRepository.findTop10ByRoleOrderByPointsEcologiquesDesc(Role.USER);
 
         List<UserScoreDTO> top10 = IntStream.range(0, top10Users.size())
@@ -37,7 +40,7 @@ public class LeaderboardService {
                 })
                 .collect(Collectors.toList());
 
-        // Get current user (if authenticated)
+        // et current user (if authenticated) to mise-en-evidence
         Object principal = SecurityContextHolder.getContext().getAuthentication() != null
                 ? SecurityContextHolder.getContext().getAuthentication().getPrincipal()
                 : null;
@@ -57,7 +60,7 @@ public class LeaderboardService {
 
         if (currentUser != null && currentUser.getRole() == Role.USER) {
             int currentPoints = currentUser.getPointsEcologiques() != null ? currentUser.getPointsEcologiques() : 0;
-            // Rank is the number of users with STRICTLY MORE points + 1
+            // calculate user rank without having to pull all users from database
             int rank = utilisateurRepository.countByRoleAndPointsEcologiquesGreaterThan(Role.USER, currentPoints) + 1;
 
             currentUserScore = UserScoreDTO.builder()

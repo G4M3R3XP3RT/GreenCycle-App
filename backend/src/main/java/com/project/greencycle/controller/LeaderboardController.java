@@ -1,5 +1,7 @@
 package com.project.greencycle.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.project.greencycle.dto.LeaderboardResponse;
 import com.project.greencycle.service.LeaderboardService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LeaderboardController {
 
-    private final LeaderboardService leaderboardService;
+    @Autowired
+    private LeaderboardService leaderboardService;
 
     @GetMapping
     public ResponseEntity<LeaderboardResponse> getLeaderboard() {

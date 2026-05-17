@@ -69,6 +69,4 @@ La base de données (MariaDB) contient déjà des identifiants préchargés par 
   - Email : `contact@recycleservice.com`
   - Mot de passe : `adminPass789`
 
----
 
-*Fait avec ❤️ pour la planète.*

@@ -1,5 +1,7 @@
 package com.project.greencycle.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.project.greencycle.dto.AuthResponse;
 import com.project.greencycle.dto.RegisterRequest;
 import com.project.greencycle.entity.Utilisateur;
@@ -17,53 +19,58 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UtilisateurRepository repository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
-    private final AuthenticationManager authenticationManager;
+        @Autowired
+        private UtilisateurRepository repository;
 
-    public AuthResponse register(RegisterRequest request) {
-        if (repository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email déjà utilisé");
+        @Autowired
+        private PasswordEncoder passwordEncoder;
+
+        @Autowired
+        private JwtUtil jwtUtil;
+
+        @Autowired
+        private AuthenticationManager authenticationManager;
+
+        public AuthResponse register(RegisterRequest request) {
+                if (repository.existsByEmail(request.getEmail())) {
+                        throw new IllegalArgumentException("Email déjà utilisé");
+                }
+
+                var user = Utilisateur.builder()
+                                .nom(request.getNom())
+                                .prenom(request.getPrenom())
+                                .email(request.getEmail())
+                                .password(passwordEncoder.encode(request.getPassword()))
+                                .role(request.getRole())
+                                .pointsEcologiques(0)
+                                .build();
+
+                repository.save(user);
+
+                var customUserDetails = new CustomUserDetails(user);
+                var jwtToken = jwtUtil.generateToken(customUserDetails);
+
+                return AuthResponse.builder()
+                                .token(jwtToken)
+                                .message("Inscription réussie")
+                                .build();
         }
 
-        var user = Utilisateur.builder()
-                .nom(request.getNom())
-                .prenom(request.getPrenom())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
-                .pointsEcologiques(0)
-                .build();
+        public AuthResponse login(LoginRequest request) {
+                authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(
+                                                request.getEmail(),
+                                                request.getPassword()));
 
-        repository.save(user);
+                var user = repository.findByEmail(request.getEmail())
+                                .orElseThrow(() -> new IllegalArgumentException("Email ou mot de passe incorrect"));
 
-        var customUserDetails = new CustomUserDetails(user);
-        var jwtToken = jwtUtil.generateToken(customUserDetails);
+                var customUserDetails = new CustomUserDetails(user);
+                var jwtToken = jwtUtil.generateToken(customUserDetails);
 
-        return AuthResponse.builder()
-                .token(jwtToken)
-                .message("Inscription réussie")
-                .build();
-    }
-
-    public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Email ou mot de passe incorrect"));
-        
-        var customUserDetails = new CustomUserDetails(user);
-        var jwtToken = jwtUtil.generateToken(customUserDetails);
-
-        return AuthResponse.builder()
-                .token(jwtToken)
-                .message("Connexion réussie")
-                .build();
-    }
+                return AuthResponse.builder()
+                                .token(jwtToken)
+                                .message("Connexion réussie")
+                                .build();
+        }
 }

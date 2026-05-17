@@ -13,8 +13,14 @@ const CollectorDashboard = () => {
   const fetchCollections = async () => {
     try {
       const response = await collectionService.getMyTours();
-      // Assume the backend returns an array of collections or wraps it in an object
-      setCollections(Array.isArray(response.data) ? response.data : response.data.content || []);
+      const data = response.data;
+      if (Array.isArray(data)) {
+        setCollections(data);
+      } else if (data && data.disponibles) {
+        setCollections([...data.actives, ...data.disponibles, ...data.historique]);
+      } else {
+        setCollections([]);
+      }
     } catch (err) {
       setError('Erreur lors du chargement des collectes.');
     } finally {
@@ -158,10 +164,10 @@ const CollectorDashboard = () => {
 
       <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
         {collecte.statut === 'EN_ATTENTE' && (
-          <button 
-            onClick={() => handleAccept(collecte.id)} 
+          <button
+            onClick={() => handleAccept(collecte.id)}
             disabled={actionLoadingId === collecte.id}
-            className="btn btn-primary" 
+            className="btn btn-primary"
             style={{ flex: 1, padding: '0.5rem', opacity: actionLoadingId === collecte.id ? 0.7 : 1 }}
           >
             {actionLoadingId === collecte.id ? 'Chargement...' : 'Prendre en charge'}

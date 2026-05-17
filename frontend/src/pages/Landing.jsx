@@ -2,13 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+//MAIN LANDING PAGE
 const Landing = () => {
   const { user } = useAuth();
-  
+  //always call useAuth to check if user logged in / stored jwt token
+
   let mainActionLink = "/register";
   let mainActionText = "Commencer maintenant";
-  
+
   if (user) {
+    //update button to appropriate dashboard based on user role
     const isCollector = user?.role === 'COLLECTOR' || (user?.roles && user.roles.includes('COLLECTOR'));
     mainActionLink = isCollector ? "/collector" : "/dashboard";
     mainActionText = "Aller au Tableau de bord";
@@ -22,7 +25,7 @@ const Landing = () => {
       <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '800px', margin: '0 auto 3rem auto', lineHeight: '1.6' }}>
         GreenCycle gamifie le recyclage. Suivez votre impact écologique, gagnez des GreenPoints et grimpez dans le classement tout en contribuant à une planète plus propre.
       </p>
-      
+
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '5rem' }}>
         <Link to={mainActionLink} className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.125rem' }}>
           {mainActionText}
@@ -40,7 +43,7 @@ const Landing = () => {
             Notre assistant IA vous aide à savoir exactement où jeter chaque type de déchet. Demandez-lui !
           </p>
         </div>
-        
+
         <div className="glass-panel delay-200" style={{ padding: '2rem', textAlign: 'left' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏆</div>
           <h3>Gagnez des GreenPoints</h3>
@@ -48,7 +51,7 @@ const Landing = () => {
             Chaque collecte validée vous rapporte des points. Concourez avec votre communauté pour devenir le meilleur éco-citoyen.
           </p>
         </div>
-        
+
         <div className="glass-panel delay-300" style={{ padding: '2rem', textAlign: 'left' }}>
           <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🚚</div>
           <h3>Collectes Optimisées</h3>
