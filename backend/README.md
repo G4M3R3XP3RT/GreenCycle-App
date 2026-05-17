@@ -6,7 +6,7 @@ Bienvenue sur le dépôt du Backend de **GreenCycle**, l'application qui gamifie
 - Java 17 ou version supérieure
 - Maven 3.6 ou version supérieure
 - Un IDE Java (IntelliJ IDEA recommandé)
-- **Ollama** installé avec le modèle `gemma4:e2b` (ou modifiez `application.properties` pour utiliser un autre modèle comme `llama3`).
+- **Ollama** installé avec le modèle `gemma4` (ou modifiez `application.properties` pour utiliser un autre modèle comme `llama3`).
 
 ## 2. Installation
 1. Cloner le dépôt Git : `git clone <url-du-dépôt>`
