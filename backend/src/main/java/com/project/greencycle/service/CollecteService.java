@@ -30,6 +30,7 @@ public class CollecteService {
     private UtilisateurRepository utilisateurRepository;
 
     public CollecteResponse creerCollecte(CollecteRequest request) {
+
         // get current authenticated user
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
@@ -87,7 +88,7 @@ public class CollecteService {
                 .filter(c -> c.getStatut() == StatutCollecte.TERMINE)
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
-
+        //order collects by their status
         return CollectorDashboardResponse.builder()
                 .disponibles(disponibles)
                 .actives(actives)
@@ -116,7 +117,6 @@ public class CollecteService {
         if (collecte.getStatut() != StatutCollecte.EN_ATTENTE) {
             throw new IllegalArgumentException("La collecte n'est pas en attente");
         }
-
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username;
         if (principal instanceof UserDetails) {

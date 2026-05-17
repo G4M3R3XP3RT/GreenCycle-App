@@ -31,6 +31,7 @@ public class AuthService {
         @Autowired
         private AuthenticationManager authenticationManager;
 
+        // register a new user
         public AuthResponse register(RegisterRequest request) {
                 if (repository.existsByEmail(request.getEmail())) {
                         throw new IllegalArgumentException("Email déjà utilisé");
@@ -56,6 +57,7 @@ public class AuthService {
                                 .build();
         }
 
+        // login a user
         public AuthResponse login(LoginRequest request) {
                 authenticationManager.authenticate(
                                 new UsernamePasswordAuthenticationToken(
