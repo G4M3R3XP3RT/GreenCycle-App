@@ -11,8 +11,9 @@ Bienvenue sur le dépôt du Backend de **GreenCycle**, l'application qui gamifie
 ## 2. Installation
 1. Cloner le dépôt Git : `git clone <url-du-dépôt>`
 2. Ouvrir le projet dans l'IDE.
-3. Lancer la commande `mvn clean install` pour installer les dépendances.
-4. Lancer l'application via votre IDE ou avec la commande (Windows) : `.\mvnw.cmd spring-boot:run` ou (Mac/Linux) : `mvn spring-boot:run`
+3. **Important :** Avant de compiler ou lancer le projet, vous **devez** définir vos identifiants de base de données en tant que variables d'environnement (voir la section **Configuration** ci-dessous). Sans ces identifiants, la compilation (`mvn clean install`) et l'exécution (`mvn spring-boot:run`) échoueront.
+4. Lancer la commande `mvn clean install` pour installer les dépendances et compiler le projet.
+5. Lancer l'application via votre IDE ou avec la commande (Windows) : `.\mvnw.cmd spring-boot:run` ou (Mac/Linux) : `mvn spring-boot:run`
 
 ## 3. Configuration
 - **Base de données** : Le projet est configuré pour utiliser **MySQL / MariaDB**. Vous devez utiliser votre propre base de données. Pour cela, exportez simplement vos identifiants dans votre terminal avant de lancer le projet :
