@@ -103,3 +103,12 @@ La base de données contient déjà des utilisateurs pour faciliter vos tests :
 **Headers :** 
 - `Authorization: Bearer <VOTRE_TOKEN>`  
 *(Aucun Body requis)*
+
+## 7. Documentation Swagger / OpenAPI
+Le projet intègre **SpringDoc OpenAPI** pour générer automatiquement la documentation interactive de l'API.
+
+Une fois l'application lancée, vous pouvez y accéder via votre navigateur :
+- **Interface Swagger UI :** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- **Spécifications OpenAPI (JSON) :** [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+
+Vous pouvez utiliser Swagger UI pour tester directement les endpoints depuis votre navigateur en utilisant le bouton **Authorize** pour insérer votre token JWT.
