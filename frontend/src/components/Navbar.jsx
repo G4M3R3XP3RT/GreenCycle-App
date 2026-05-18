@@ -11,7 +11,7 @@ const Navbar = () => {
     navigate('/'); // auto go to landing page first
     setTimeout(() => {
       logout(); // clear state after navigation
-    }, 0);
+    }, 100); // give timeout to not go to login again
   };
 
   //const to update navbar if user is collector (Espace Collecteur)
